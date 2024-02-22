@@ -6,6 +6,7 @@ from news import *
 import randfacts 
 from jokes import *
 from weather import *
+import datetime
 
 
 
@@ -13,11 +14,13 @@ engine = p.init()
 rate = engine.getProperty('rate')
 engine.setProperty('rate',180)
 voices = engine.getProperty('voices')
-engine.setProperty('voices',voices[1].id)
+engine.setProperty('voices',voices[0].id)
 
 def speak(text):
     engine.say(text)
     engine.runAndWait()
+
+today_date = datetime.datetime.now()
 
 r = sr.Recognizer()
 
@@ -25,6 +28,16 @@ speak("Hello sir I am Berlin")
 print("Hello sir I am Berlin")
 print("Temperature in New Delhi is "+str(temp())+"degree celcius "+ "and with "+str(des()))
 speak("Temperature in New Delhi is "+str(temp())+"degree celcius "+ "and with "+str(des()))
+date_str = "today is {} of {} and it's currently {}:{} {}".format(
+    today_date.strftime("%d"),
+    today_date.strftime("%B"),
+    today_date.strftime("%I"),
+    today_date.strftime("%M"),
+    today_date.strftime("%p")
+)
+
+print(date_str)
+speak(date_str)
 
 with sr.Microphone() as source:
     r.energy_threshold=10000
@@ -34,7 +47,7 @@ with sr.Microphone() as source:
     text = r.recognize_google(audio)
     print(text)
 
-if "what" and "about" and "you" in text:
+if "what" in text and "about" in text and "you" in text:
     print("I am all good sir")
     speak("I am all good sir")
 speak("What can i do for you")
@@ -91,12 +104,14 @@ elif "news" in text1:
 
 elif "fact" in text1 or "facts" in text1:
     print("Sure sir")
+    speak("Sure sir")    
     x = randfacts.getFact()
     print(x)
     speak("Did you know that, "+x)
 
 elif "jokes" in text1 or "joke" in text1:
     print("Sure sir, get ready for some chuckles")
+    speak("Sure sir, get ready for some chuckles")
     ar = joke()
     print(ar[0])
     speak(ar[0])
